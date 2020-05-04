@@ -1,1 +1,18 @@
-{}
+{ 
+    "users": {
+        "497995034340098048": {
+            "id": "497995034340098048",
+            "username": "khalil",
+            "totalMiles": 8.5,
+            "lastCheckedIn": "Sun, 03 May 2020 19:21:54 GMT",
+            "checkInCount": 2
+        },
+        "363508431799320596": {
+            "id": "363508431799320596",
+            "username": "Rodney (McDreamie)",
+            "totalMiles": 12.66,
+            "lastCheckedIn": "Sun, 03 May 2020 19:21:38 GMT",
+            "checkInCount": 2
+        }
+    }
+}

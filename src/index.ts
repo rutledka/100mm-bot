@@ -1,40 +1,23 @@
 require('dotenv').config()
 import Discord from 'discord.js'
-import { Command, User } from './types'
-import { doAdd, doHelp, doLeaderboard, doMileage } from './botApi'
+import { Command } from './types'
+import { createReply } from './botApi'
 import { parseCommand } from './utils'
 
 const client = new Discord.Client()
-
-const createReply = (
-    command: keyof typeof Command,
-    user: User,
-    remainingArgs: string[] = []
-): string | void => {
-    console.log(`processing command: ${command}`)
-    switch (command) {
-        case Command.add:
-            return doAdd(user, remainingArgs)
-        case Command.leaderboard:
-            return doLeaderboard()
-        case Command.mileage:
-            return doMileage(user)
-        case Command.help:
-            return doHelp()
-        default:
-            return
-    }
-}
 
 client.on('ready', () => {
     console.log(`Logged in as ${client?.user?.tag}!`)
 })
 
 client.on('message', (msg) => {
+    if (msg.author.id === client.user?.id) {
+        return
+    }
     const lines = msg.content.toLowerCase().split('\n')
-    let message = ''
+    const message: string[] = []
     let shouldRespond = false
-    lines.forEach((line) => {
+    lines.forEach(async (line, index) => {
         const contentArray = line.split(' ')
         if (parseCommand(contentArray[0])) {
             shouldRespond = true
@@ -44,10 +27,14 @@ client.on('message', (msg) => {
                 id: msg.author.id,
                 username: msg.author.username
             }
-            message += `${createReply(command as Command, user, remaining)}\n`
+            await createReply(command as Command, user, remaining).then((msg) =>
+                message.push(msg)
+            )
+            index === lines.length - 1 &&
+                shouldRespond &&
+                msg.reply(`\n${message.join('\n')}`)
         }
     })
-    shouldRespond && msg.reply(`\n${message}`)
 })
 
 client.login(process.env.DISCORD_TOKEN)

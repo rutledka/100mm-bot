@@ -14,10 +14,11 @@ export type User = {
 export type Runner = {
     id: string
     username: string
-    miles: number
+    totalMiles: number
     lastCheckedIn: string
+    checkInCount: number
 }
 
-export type DB = {
+export type FireBaseDB = {
     [key: string]: Runner
 }
